@@ -2,7 +2,6 @@ package auth
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 
 	"github.com/julienschmidt/httprouter"
@@ -11,6 +10,10 @@ import (
 type credential struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
+}
+
+type token struct {
+	AccessToken string `json:"accessToken"`
 }
 
 // Handle POST /login
@@ -22,5 +25,16 @@ func Handle(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 		return
 	}
 
-	fmt.Println(c.Username, c.Password)
+	accessToken, err := authenticate(&c)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(&token{AccessToken: accessToken})
+}
+
+func authenticate(c *credential) (string, error) {
+	return "thesecrettoken", nil
 }
