@@ -1,28 +1,14 @@
-import React, { useEffect, useMemo, useState } from 'react'
-import { createEditor, Node, Range } from 'slate'
-import { Slate, Editable, withReact } from 'slate-react'
-import { withHistory } from 'slate-history'
+import React, { useEffect, useState } from 'react'
 
+import Drawer from './Drawer'
+import Editor from './Editor'
 import firebase from '../services/firebase/auth'
 import router from '../services/router'
 
-const initialValue = [
-  {
-    type: 'paragraph',
-    children: [
-      {
-        text: 'A line of text in a paragraph.',
-        marks: [],
-      },
-    ],
-  },
-]
+import '../styles/Main.scss'
 
 const Main = () => {
   const [isLoaded, setLoad] = useState(false)
-  const [value, setValue] = useState<Node[]>(initialValue)
-  const [selection, setSelection] = useState<Range | null>(null)
-  const editor = useMemo(() => withHistory(withReact(createEditor())), [])
 
   useEffect(() => {
     ;(async () => {
@@ -32,18 +18,9 @@ const Main = () => {
   }, [])
 
   return isLoaded ? (
-    <div>
-      <Slate
-        editor={editor}
-        value={value}
-        selection={selection}
-        onChange={(value: Node[], selection: Range | null) => {
-          setValue(value)
-          setSelection(selection)
-        }}
-      >
-        <Editable placeholder="Enter some plain text..." />
-      </Slate>
+    <div className="main">
+      <Drawer />
+      <Editor />
     </div>
   ) : (
     <div>Loading...</div>
