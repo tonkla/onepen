@@ -19,7 +19,7 @@ const initialValue = [
 
 const Editor = () => {
   const [value, setValue] = useState<Node[]>(initialValue)
-  const [selection, setSelection] = useState<Range | null>(null)
+  const [selection] = useState<Range | null>(null)
   const editor = useMemo(() => withHistory(withReact(createEditor())), [])
 
   return (
@@ -28,9 +28,8 @@ const Editor = () => {
         editor={editor}
         value={value}
         selection={selection}
-        onChange={(value: Node[], selection: Range | null) => {
+        onChange={(value: Node[]) => {
           setValue(value)
-          setSelection(selection)
         }}
       >
         <Editable placeholder="Enter some plain text..." />
