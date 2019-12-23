@@ -3,3 +3,6 @@ build:
 
 deploy:
 	gcloud run deploy api --image gcr.io/keencat-2/api --platform managed --region asia-northeast1
+
+setkey:
+	export GOOGLE_APPLICATION_CREDENTIALS=./key.json

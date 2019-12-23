@@ -1,0 +1,4 @@
+tmp/
+.env
+.env.prod
+key.json
