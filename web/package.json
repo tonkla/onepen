@@ -10,6 +10,8 @@
     "deploy": "firebase deploy"
   },
   "dependencies": {
+    "@material-ui/core": "^4.8.0",
+    "@material-ui/icons": "^4.5.1",
     "easy-peasy": "^3.2.6",
     "firebase": "^7.6.1",
     "node-sass": "^4.13.0",

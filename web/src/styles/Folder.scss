@@ -1,3 +1,10 @@
-.folder {
+li.folder {
+  border-bottom: 1px solid #efefef;
+  cursor: pointer;
   display: flex;
+  padding: 10px 0;
+
+  &:first-child {
+    border-top: 1px solid #efefef;
+  }
 }
