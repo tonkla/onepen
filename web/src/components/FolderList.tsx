@@ -8,9 +8,10 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
 import AddIcon from '@material-ui/icons/Add'
 
-import Folder from './Folder'
-import FolderType from '../typings/folder'
 import { useStoreActions, useStoreState } from '../store'
+import Folder from '../typings/folder'
+
+import FolderItem from './FolderItem'
 
 import '../styles/FolderList.scss'
 
@@ -26,7 +27,7 @@ const FolderList = () => {
       id = shortid.generate()
       if (id.indexOf('-') < 0 && id.indexOf('_') < 0) break
     }
-    const folder: FolderType = {
+    const folder: Folder = {
       id,
       name,
       parent: '',
@@ -35,11 +36,11 @@ const FolderList = () => {
     createFolder(folder)
   }
 
-  const handleClickOpen = () => {
+  const handleClickOpenDialog = () => {
     setOpen(true)
   }
 
-  const handleClose = (btn: string) => {
+  const handleCloseDialog = (btn: string) => {
     setOpen(false)
     if (btn === 'add' && folderName.trim() !== '') addFolder(folderName)
     setFolderName('')
@@ -52,14 +53,14 @@ const FolderList = () => {
         <Button
           className="btn"
           color="primary"
-          onClick={handleClickOpen}
+          onClick={handleClickOpenDialog}
           size="small"
           startIcon={<AddIcon />}
           variant="outlined"
         >
           Add Folder
         </Button>
-        <Dialog aria-labelledby="form-dialog-title" onClose={handleClose} open={isOpen}>
+        <Dialog aria-labelledby="form-dialog-title" onClose={handleCloseDialog} open={isOpen}>
           <DialogTitle id="form-dialog-title">Add Folder</DialogTitle>
           <DialogContent>
             <TextField
@@ -72,8 +73,8 @@ const FolderList = () => {
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => handleClose('cancel')}>Cancel</Button>
-            <Button color="primary" onClick={() => handleClose('add')}>
+            <Button onClick={() => handleCloseDialog('cancel')}>Cancel</Button>
+            <Button color="primary" onClick={() => handleCloseDialog('add')}>
               Add
             </Button>
           </DialogActions>
@@ -81,7 +82,7 @@ const FolderList = () => {
       </div>
       <ul>
         {folders.map(folder => (
-          <Folder folder={folder} key={folder.id} />
+          <FolderItem folder={folder} key={folder.id} />
         ))}
       </ul>
     </div>
