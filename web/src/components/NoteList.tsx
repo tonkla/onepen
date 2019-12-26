@@ -72,7 +72,7 @@ const NoteList = () => {
       </ul>
     </div>
   ) : (
-    <div>No Selected Folder</div>
+    <div />
   )
 }
 
