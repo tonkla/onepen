@@ -3,7 +3,7 @@ import React from 'react'
 import { useStoreActions } from '../store'
 import Folder from '../typings/folder'
 
-import '../styles/Folder.scss'
+import '../styles/FolderItem.scss'
 
 interface FolderProps {
   folder: Folder

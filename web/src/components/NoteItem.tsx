@@ -3,7 +3,7 @@ import React from 'react'
 import { useStoreActions } from '../store'
 import Note from '../typings/note'
 
-import '../styles/Note.scss'
+import '../styles/NoteItem.scss'
 
 interface NoteProps {
   note: Note
