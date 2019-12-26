@@ -18,8 +18,8 @@ import '../styles/FolderList.scss'
 const FolderList = () => {
   const [isOpen, setOpen] = React.useState(false)
   const [folderName, setFolderName] = React.useState('')
-  const createFolder = useStoreActions(actions => actions.folderList.create)
-  const folders = useStoreState(state => state.folderList.folders)
+  const createFolder = useStoreActions(actions => actions.folderState.create)
+  const folders = useStoreState(state => state.folderState.folders)
 
   const addFolder = (name: string) => {
     let id = ''

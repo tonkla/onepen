@@ -1,15 +1,15 @@
 import { Action, action } from 'easy-peasy'
 
-export interface UserModel {
+export interface UserStateModel {
   name: string
-  set: Action<UserModel, string>
+  set: Action<UserStateModel, string>
 }
 
-const user: UserModel = {
+const userState: UserStateModel = {
   name: '',
-  set: action((state, payload) => {
-    state.name = payload
+  set: action((state, name) => {
+    state.name = name
   }),
 }
 
-export default user
+export default userState

@@ -8,6 +8,9 @@ const Setting = () => {
   return (
     <div className="setting">
       <Profile />
+      <ul>
+        <li>Logout</li>
+      </ul>
     </div>
   )
 }

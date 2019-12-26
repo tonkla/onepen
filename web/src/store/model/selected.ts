@@ -1,21 +1,21 @@
 import { Action, action } from 'easy-peasy'
 
-export interface SelectedModel {
+export interface SelectedStateModel {
   folderId: string
   noteId: string
-  setFolderId: Action<SelectedModel, string>
-  setNoteId: Action<SelectedModel, string>
+  setFolderId: Action<SelectedStateModel, string>
+  setNoteId: Action<SelectedStateModel, string>
 }
 
-const selected: SelectedModel = {
+const selectedState: SelectedStateModel = {
   folderId: '',
   noteId: '',
-  setFolderId: action((state, payload) => {
-    state.folderId = payload
+  setFolderId: action((state, id) => {
+    state.folderId = id
   }),
-  setNoteId: action((state, payload) => {
-    state.noteId = payload
+  setNoteId: action((state, id) => {
+    state.noteId = id
   }),
 }
 
-export default selected
+export default selectedState

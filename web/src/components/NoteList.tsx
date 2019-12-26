@@ -12,12 +12,12 @@ import NoteItem from './NoteItem'
 import '../styles/NoteList.scss'
 
 const NoteList = () => {
-  const selectedFolderId = useStoreState(state => state.selected.folderId)
+  const selectedFolderId = useStoreState(state => state.selectedState.folderId)
   const folder = useStoreState(state =>
-    state.folderList.folders.find(f => f.id === selectedFolderId)
+    state.folderState.folders.find(f => f.id === selectedFolderId)
   )
-  const updateFolder = useStoreActions(actions => actions.folderList.update)
-  const createNote = useStoreActions(actions => actions.noteList.create)
+  const updateFolder = useStoreActions(actions => actions.folderState.update)
+  const createNote = useStoreActions(actions => actions.noteState.create)
 
   const [notes, setNotes] = useState<Note[]>([])
   useEffect(() => {

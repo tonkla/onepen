@@ -3,17 +3,17 @@ import { Action, action, Thunk, thunk } from 'easy-peasy'
 import Note from '../../typings/note'
 import storage from '../../services/storage'
 
-export interface NoteListModel {
+export interface NoteStateModel {
   notes: Note[]
-  create: Thunk<NoteListModel, Note>
-  update: Thunk<NoteListModel, Note>
-  delete: Thunk<NoteListModel, Note>
-  _create: Action<NoteListModel, Note>
-  _update: Action<NoteListModel, Note>
-  _delete: Action<NoteListModel, Note>
+  create: Thunk<NoteStateModel, Note>
+  update: Thunk<NoteStateModel, Note>
+  delete: Thunk<NoteStateModel, Note>
+  _create: Action<NoteStateModel, Note>
+  _update: Action<NoteStateModel, Note>
+  _delete: Action<NoteStateModel, Note>
 }
 
-const noteList: NoteListModel = {
+const noteState: NoteStateModel = {
   notes: [],
   create: thunk(async (actions, note) => {
     await storage.setNote(note)
@@ -39,4 +39,4 @@ const noteList: NoteListModel = {
   }),
 }
 
-export default noteList
+export default noteState

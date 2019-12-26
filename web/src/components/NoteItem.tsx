@@ -10,7 +10,7 @@ interface NoteProps {
 }
 
 const NoteItem = ({ note }: NoteProps) => {
-  const setNoteId = useStoreActions(actions => actions.selected.setNoteId)
+  const setNoteId = useStoreActions(actions => actions.selectedState.setNoteId)
 
   const handleClick = (e: any) => {
     setNoteId(e.target.id)
