@@ -1,4 +1,4 @@
-const goto = (path: string) => {
+export function goto(path: string) {
   window.history.replaceState({}, '', path)
   window.dispatchEvent(new window.PopStateEvent('popstate'))
 }
