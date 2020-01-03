@@ -1,10 +1,15 @@
 import { Action, action, Thunk, thunk } from 'easy-peasy'
 
-import Note from '../../typings/note'
+import Note from '../../typings/Note'
 import storage from '../../services/storage'
 
+interface NoteId {
+  id: string
+  parent: string
+}
+
 export interface NoteStateModel {
-  notes: Note[]
+  noteIds: NoteId[]
   create: Thunk<NoteStateModel, Note>
   update: Thunk<NoteStateModel, Note>
   delete: Thunk<NoteStateModel, Note>
@@ -14,7 +19,7 @@ export interface NoteStateModel {
 }
 
 const noteState: NoteStateModel = {
-  notes: [],
+  noteIds: [],
   create: thunk(async (actions, note) => {
     await storage.setNote(note)
     actions._create(note)
@@ -28,14 +33,14 @@ const noteState: NoteStateModel = {
     actions._delete(note)
   }),
   _create: action((state, note) => {
-    state.notes = [...state.notes, note]
+    state.noteIds = [...state.noteIds, { id: note.id, parent: note.parent }]
   }),
   _update: action((state, note) => {
-    const rest = state.notes.filter(n => n.id !== note.id)
-    state.notes = [...rest, note]
+    const rest = state.noteIds.filter(n => n.id !== note.id)
+    state.noteIds = [...rest, { id: note.id, parent: note.parent }]
   }),
   _delete: action((state, note) => {
-    state.notes = state.notes.filter(n => n.id !== note.id)
+    state.noteIds = state.noteIds.filter(n => n.id !== note.id)
   }),
 }
 

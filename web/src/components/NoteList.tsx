@@ -21,11 +21,10 @@ const NoteList = () => {
 
   const [notes, setNotes] = useState<Note[]>([])
   useEffect(() => {
-    const getNotes = async () => {
+    ;(async () => {
       const _notes = folder ? await storage.findNotesByIds(folder.noteIds) : []
       setNotes(_notes)
-    }
-    getNotes()
+    })()
   }, [folder])
 
   const handleClickAddNote = () => {
@@ -39,7 +38,10 @@ const NoteList = () => {
     const note: Note = {
       id,
       title: 'Untitled',
+      body: '',
       parent: folder.id,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     }
     createNote(note)
 
