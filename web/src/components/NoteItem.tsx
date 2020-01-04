@@ -18,7 +18,7 @@ const NoteItem = ({ note }: NoteProps) => {
 
   return (
     <li className="note" id={note.id} key={note.id} onClick={handleClick}>
-      {note.title}
+      {note.title.trim() !== '' ? note.title : 'Untitled'}
     </li>
   )
 }

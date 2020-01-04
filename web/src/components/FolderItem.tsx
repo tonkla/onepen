@@ -11,9 +11,11 @@ interface FolderProps {
 
 const FolderItem = ({ folder }: FolderProps) => {
   const setFolderId = useStoreActions(actions => actions.selectedState.setFolderId)
+  const setNoteId = useStoreActions(actions => actions.selectedState.setNoteId)
 
   const handleClick = (e: any) => {
     setFolderId(e.target.id)
+    setNoteId('')
   }
 
   return (

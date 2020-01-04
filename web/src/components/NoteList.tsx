@@ -17,9 +17,10 @@ const NoteList = () => {
     state.folderState.folders.find(f => f.id === selectedFolderId)
   )
   const updateFolder = useStoreActions(actions => actions.folderState.update)
-  const createNote = useStoreActions(actions => actions.noteState.create)
+  const setSelectedNoteId = useStoreActions(actions => actions.selectedState.setNoteId)
 
   const [notes, setNotes] = useState<Note[]>([])
+
   useEffect(() => {
     ;(async () => {
       const _notes = folder ? await storage.findNotesByIds(folder.noteIds) : []
@@ -27,7 +28,7 @@ const NoteList = () => {
     })()
   }, [folder])
 
-  const handleClickAddNote = () => {
+  const handleClickAddNote = async () => {
     if (!folder) return
 
     let id = ''
@@ -36,19 +37,22 @@ const NoteList = () => {
       if (id.indexOf('-') < 0 && id.indexOf('_') < 0) break
     }
     const note: Note = {
-      id,
-      title: 'Untitled',
-      body: '',
       parent: folder.id,
+      id,
+      title: '',
+      body: '',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     }
-    createNote(note)
+    // First, save note in localStorage
+    await storage.setNote(note)
+    // Then update the editor UI state
+    setSelectedNoteId(id)
 
-    folder.noteIds.push(note.id)
+    // Second, add the new note ID into parent folder
+    folder.noteIds.push(id)
     updateFolder(folder)
-
-    // Update UI
+    // Then update the notes list UI state
     setNotes([...notes, note])
   }
 
