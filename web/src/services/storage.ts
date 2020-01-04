@@ -27,7 +27,9 @@ export async function findNotesByIds(ids: string[]): Promise<Note[]> {
   ids.forEach(id => {
     notes.push(getNote(id))
   })
-  return (await Promise.all<Note>(notes)).filter(n => n)
+  return (await Promise.all<Note>(notes))
+    .filter(n => n)
+    .sort((a, b) => (new Date(a.updatedAt) < new Date(b.updatedAt) ? 1 : -1))
 }
 
 export default {

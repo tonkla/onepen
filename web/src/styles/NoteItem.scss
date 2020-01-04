@@ -2,9 +2,20 @@ li.note {
   border-bottom: 1px solid #efefef;
   cursor: pointer;
   display: flex;
+  flex-direction: column;
   padding: 10px 0;
 
   &:first-child {
     border-top: 1px solid #efefef;
+  }
+
+  .title {
+    font-size: 1.2em;
+  }
+
+  .updated {
+    color: #ccc;
+    font-size: 0.8em;
+    margin-top: 5px;
   }
 }

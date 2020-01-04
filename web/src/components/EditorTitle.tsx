@@ -6,6 +6,7 @@ import { deepEqual } from 'fast-equals'
 import { useDebouncedCallback } from 'use-debounce'
 
 import storage from '../services/storage'
+import { useStoreActions } from '../store'
 import Note from '../typings/note'
 
 const initialTitle: Node[] = [
@@ -22,6 +23,8 @@ type EditorTitleProps = {
 const EditorTitle = ({ note }: EditorTitleProps) => {
   const editorTitle = useMemo(() => withHistory(withReact(createEditor())), [])
   const [title, setTitle] = useState<Node[]>(initialTitle)
+
+  const actionUpdate = useStoreActions(actions => actions.noteState.update)
 
   useEffect(() => {
     setTitle(deserializeText(note.title))
@@ -40,11 +43,13 @@ const EditorTitle = ({ note }: EditorTitleProps) => {
   }
 
   const [saveNote] = useDebouncedCallback(async (v: Node[]) => {
-    await storage.setNote({
+    const _n = {
       ...note,
       title: serializeText(v),
       updatedAt: new Date().toISOString(),
-    })
+    }
+    actionUpdate(_n)
+    await storage.setNote(_n)
   }, 1000)
 
   return (

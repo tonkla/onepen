@@ -1,11 +1,13 @@
 import { persist } from 'easy-peasy'
 
 import folderState, { FolderStateModel } from './folder'
+import noteState, { NoteStateModel } from './note'
 import selectedState, { SelectedStateModel } from './selected'
 import userState, { UserStateModel } from './user'
 
 export interface StoreModel {
   folderState: FolderStateModel
+  noteState: NoteStateModel
   selectedState: SelectedStateModel
   userState: UserStateModel
 }
@@ -13,10 +15,11 @@ export interface StoreModel {
 const model: StoreModel = persist(
   {
     folderState,
+    noteState,
     selectedState,
     userState,
   },
-  { storage: 'localStorage' }
+  { storage: 'localStorage', blacklist: ['noteState'] }
 )
 
 export default model

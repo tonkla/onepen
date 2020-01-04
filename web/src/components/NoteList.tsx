@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import shortid from 'shortid'
 import Button from '@material-ui/core/Button'
 import AddIcon from '@material-ui/icons/Add'
@@ -19,14 +19,15 @@ const NoteList = () => {
   const updateFolder = useStoreActions(actions => actions.folderState.update)
   const setSelectedNoteId = useStoreActions(actions => actions.selectedState.setNoteId)
 
-  const [notes, setNotes] = useState<Note[]>([])
+  const notes = useStoreState(state => state.noteState.notes)
+  const setNotes = useStoreActions(actions => actions.noteState.setNotes)
 
   useEffect(() => {
     ;(async () => {
       const _notes = folder ? await storage.findNotesByIds(folder.noteIds) : []
       setNotes(_notes)
     })()
-  }, [folder])
+  }, [folder, setNotes])
 
   const handleClickAddNote = async () => {
     if (!folder) return
@@ -53,7 +54,7 @@ const NoteList = () => {
     folder.noteIds.push(id)
     updateFolder(folder)
     // Then update the notes list UI state
-    setNotes([...notes, note])
+    setNotes([note, ...notes])
   }
 
   return folder ? (
