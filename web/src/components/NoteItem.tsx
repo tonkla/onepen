@@ -26,7 +26,7 @@ const NoteItem = ({ note }: NoteProps) => {
     targetNote ? state.folderState.folders.find(f => f.id === targetNote.parent) : null
   )
   const actionSetSelectedNoteId = useStoreActions(actions => actions.selectedState.setNoteId)
-  const actionDeleteNote = useStoreActions(actions => actions.noteState.delete)
+  const actionDeleteNote = useStoreActions(actions => actions.noteState.deleteNote)
   const actionUpdateFolder = useStoreActions(actions => actions.folderState.update)
 
   const show = (id: string) => actionSetSelectedNoteId(id)

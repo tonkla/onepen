@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { createEditor, Node } from 'slate'
 import { Slate, Editable, withReact } from 'slate-react'
 import { withHistory } from 'slate-history'
@@ -7,31 +7,19 @@ import { useDebouncedCallback } from 'use-debounce'
 
 import storage from '../services/storage'
 import { useStoreActions, useStoreState } from '../store'
-import Note from '../typings/note'
 
-type EditorTitleProps = {
-  blankNote: Note
-}
-
-const EditorTitle = ({ blankNote }: EditorTitleProps) => {
+const EditorTitle = () => {
   const editorTitle = useMemo(() => withHistory(withReact(createEditor())), [])
 
   const initialTitle = [{ type: 'paragraph', children: [{ text: '' }] }]
   const [title, setTitle] = useState<Node[]>(initialTitle)
-  const [note, setNote] = useState<Note>(blankNote)
 
-  const actionSetNotes = useStoreActions(actions => actions.noteState.setNotes)
-  const notes = useStoreState(state => state.noteState.notes)
-  const selectedNoteId = useStoreState(state => state.selectedState.noteId)
+  const note = useStoreState(state => state.noteState.note)
+  const actionUpdateNote = useStoreActions(actions => actions.noteState.updateNote)
 
   useEffect(() => {
-    ;(async () => {
-      const _note = await storage.getNote(selectedNoteId)
-      const __note = _note ? _note : blankNote
-      setNote(__note)
-      setTitle(deserializeText(__note.title))
-    })()
-  }, [blankNote, selectedNoteId])
+    if (note) setTitle(deserializeText(note.title))
+  }, [note])
 
   const serializeText = (nodes: Node[]): string => {
     return nodes.map(n => Node.string(n)).join('\n')
@@ -46,14 +34,16 @@ const EditorTitle = ({ blankNote }: EditorTitleProps) => {
   }
 
   const [saveNote] = useDebouncedCallback(async (v: Node[]) => {
-    const newNote = {
-      ...note,
-      title: serializeText(v),
-      updatedAt: new Date().toISOString(),
+    if (note) {
+      const newNote = {
+        ...note,
+        title: serializeText(v),
+        updatedAt: new Date().toISOString(),
+      }
+      actionUpdateNote(newNote)
+      await storage.setNote(newNote)
     }
-    await storage.setNote(newNote)
-    actionSetNotes([newNote, ...notes.filter(n => n.id !== newNote.id)])
-  }, 300)
+  }, 500)
 
   return (
     <div className="title">
