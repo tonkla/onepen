@@ -6,29 +6,32 @@ import { deepEqual } from 'fast-equals'
 import { useDebouncedCallback } from 'use-debounce'
 
 import storage from '../services/storage'
-import { useStoreActions } from '../store'
+import { useStoreActions, useStoreState } from '../store'
 import Note from '../typings/note'
 
-const initialTitle: Node[] = [
-  {
-    type: 'paragraph',
-    children: [{ text: '' }],
-  },
-]
-
 type EditorTitleProps = {
-  note: Note
+  blankNote: Note
 }
 
-const EditorTitle = ({ note }: EditorTitleProps) => {
+const EditorTitle = ({ blankNote }: EditorTitleProps) => {
   const editorTitle = useMemo(() => withHistory(withReact(createEditor())), [])
-  const [title, setTitle] = useState<Node[]>(initialTitle)
 
-  const actionUpdate = useStoreActions(actions => actions.noteState.update)
+  const initialTitle = [{ type: 'paragraph', children: [{ text: '' }] }]
+  const [title, setTitle] = useState<Node[]>(initialTitle)
+  const [note, setNote] = useState<Note>(blankNote)
+
+  const actionSetNotes = useStoreActions(actions => actions.noteState.setNotes)
+  const notes = useStoreState(state => state.noteState.notes)
+  const selectedNoteId = useStoreState(state => state.selectedState.noteId)
 
   useEffect(() => {
-    setTitle(deserializeText(note.title))
-  }, [note])
+    ;(async () => {
+      const _note = await storage.getNote(selectedNoteId)
+      const __note = _note ? _note : blankNote
+      setNote(__note)
+      setTitle(deserializeText(__note.title))
+    })()
+  }, [blankNote, selectedNoteId])
 
   const serializeText = (nodes: Node[]): string => {
     return nodes.map(n => Node.string(n)).join('\n')
@@ -43,14 +46,14 @@ const EditorTitle = ({ note }: EditorTitleProps) => {
   }
 
   const [saveNote] = useDebouncedCallback(async (v: Node[]) => {
-    const _n = {
+    const newNote = {
       ...note,
       title: serializeText(v),
       updatedAt: new Date().toISOString(),
     }
-    actionUpdate(_n)
-    await storage.setNote(_n)
-  }, 1000)
+    await storage.setNote(newNote)
+    actionSetNotes([newNote, ...notes.filter(n => n.id !== newNote.id)])
+  }, 300)
 
   return (
     <div className="title">

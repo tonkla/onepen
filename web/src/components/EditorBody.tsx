@@ -6,26 +6,32 @@ import { deepEqual } from 'fast-equals'
 import { useDebouncedCallback } from 'use-debounce'
 
 import storage from '../services/storage'
+import { useStoreActions, useStoreState } from '../store'
 import Note from '../typings/note'
 
-const initialBody: Node[] = [
-  {
-    type: 'paragraph',
-    children: [{ text: '' }],
-  },
-]
-
 type EditorBodyProps = {
-  note: Note
+  blankNote: Note
 }
 
-const EditorBody = ({ note }: EditorBodyProps) => {
+const EditorBody = ({ blankNote }: EditorBodyProps) => {
   const editorBody = useMemo(() => withHistory(withReact(createEditor())), [])
+
+  const initialBody = [{ type: 'paragraph', children: [{ text: '' }] }]
   const [body, setBody] = useState<Node[]>(initialBody)
+  const [note, setNote] = useState<Note>(blankNote)
+
+  const actionSetNotes = useStoreActions(actions => actions.noteState.setNotes)
+  const notes = useStoreState(state => state.noteState.notes)
+  const selectedNoteId = useStoreState(state => state.selectedState.noteId)
 
   useEffect(() => {
-    setBody(deserializeMarkdown(note.body))
-  }, [note])
+    ;(async () => {
+      const _note = await storage.getNote(selectedNoteId)
+      const __note = _note ? _note : blankNote
+      setNote(__note)
+      setBody(deserializeMarkdown(__note.body))
+    })()
+  }, [blankNote, selectedNoteId])
 
   // TODO: add Markdown support
   const serializeMarkdown = (nodes: Node[]): string => {
@@ -42,11 +48,13 @@ const EditorBody = ({ note }: EditorBodyProps) => {
   }
 
   const [saveNote] = useDebouncedCallback(async (v: Node[]) => {
-    await storage.setNote({
+    const newNote = {
       ...note,
       body: serializeMarkdown(v),
       updatedAt: new Date().toISOString(),
-    })
+    }
+    await storage.setNote(newNote)
+    actionSetNotes([newNote, ...notes.filter(n => n.id !== newNote.id)])
   }, 1000)
 
   return (

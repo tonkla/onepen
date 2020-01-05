@@ -1,6 +1,6 @@
 import localforage from 'localforage'
 
-import Note from '../typings/note'
+import Note, { TinyNote } from '../typings/note'
 
 localforage.config({
   driver: localforage.LOCALSTORAGE,
@@ -18,7 +18,7 @@ export async function setNote(note: Note) {
   await localforage.setItem(`${NOTE_KEY_PREFIX}${note.id}`, note)
 }
 
-export async function removeNote(note: Note) {
+export async function removeNote(note: Note | TinyNote) {
   await localforage.removeItem(`${NOTE_KEY_PREFIX}${note.id}`)
 }
 

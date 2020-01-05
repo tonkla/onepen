@@ -12,11 +12,11 @@ export interface FolderStateModel {
 const folderState: FolderStateModel = {
   folders: [],
   create: action((state, folder) => {
-    state.folders = [...state.folders, folder]
+    state.folders = [folder, ...state.folders]
   }),
   update: action((state, folder) => {
     const rest = state.folders.filter(f => f.id !== folder.id)
-    state.folders = [...rest, folder]
+    state.folders = [folder, ...rest]
   }),
   delete: action((state, folder) => {
     state.folders = state.folders.filter(f => f.id !== folder.id)

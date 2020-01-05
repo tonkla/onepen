@@ -6,7 +6,7 @@ export interface NoteStateModel {
   notes: TinyNote[]
   setNotes: Action<NoteStateModel, TinyNote[]>
   update: Action<NoteStateModel, Note>
-  delete: Action<NoteStateModel, Note>
+  delete: Action<NoteStateModel, Note | TinyNote>
 }
 
 const noteState: NoteStateModel = {
@@ -16,7 +16,8 @@ const noteState: NoteStateModel = {
   }),
   update: action((state, note) => {
     const rest = state.notes.filter(n => n.id !== note.id)
-    state.notes = [{ id: note.id, title: note.title, updatedAt: note.updatedAt }, ...rest]
+    const { body, ...tinyNote } = note
+    state.notes = [tinyNote, ...rest]
   }),
   delete: action((state, note) => {
     state.notes = state.notes.filter(n => n.id !== note.id)
