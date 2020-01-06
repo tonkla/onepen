@@ -12,12 +12,20 @@ import '../styles/Main.scss'
 const Main = () => {
   const [isLoaded, setLoaded] = useState(false)
 
-  const setUser = useStoreActions(actions => actions.userState.set)
+  const setUser = useStoreActions(actions => actions.userState.setUser)
 
   useEffect(() => {
     ;(async () => {
       if (await firebase.isSignedIn()) {
-        setUser('John Doe')
+        const user: any = await firebase.currentUser()
+        if (user) {
+          setUser({
+            uid: user.uid,
+            email: user.email,
+            name: user.displayName,
+            photoUrl: user.photoURL,
+          })
+        }
         setLoaded(true)
       } else router.goto('/login')
     })()

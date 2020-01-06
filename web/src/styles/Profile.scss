@@ -1,3 +1,10 @@
 .profile {
   display: flex;
+  justify-content: center;
+
+  .avatar {
+    height: 60px;
+    width: 60px;
+    border-radius: 30px;
+  }
 }

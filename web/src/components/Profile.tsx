@@ -2,14 +2,16 @@ import React from 'react'
 
 import { useStoreState } from '../store'
 
+import '../styles/Profile.scss'
+
 const Profile = () => {
-  const user = useStoreState(state => state.userState)
-  return (
+  const user = useStoreState(state => state.userState.user)
+  return user ? (
     <div className="profile">
-      <div>
-        <span>Hi, {user.name}</span>
-      </div>
+      <img src={user.photoUrl} alt={user.name} title={user.name} className="avatar" />
     </div>
+  ) : (
+    <div />
   )
 }
 

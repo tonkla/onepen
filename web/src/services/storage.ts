@@ -32,9 +32,14 @@ export async function findNotesByIds(ids: string[]): Promise<Note[]> {
     .sort((a, b) => (new Date(a.updatedAt) < new Date(b.updatedAt) ? 1 : -1))
 }
 
+export function clear() {
+  localStorage.clear()
+}
+
 export default {
   getNote,
   setNote,
   removeNote,
   findNotesByIds,
+  clear,
 }

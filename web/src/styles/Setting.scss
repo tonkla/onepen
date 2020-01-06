@@ -2,6 +2,17 @@
   border-bottom: #efefef 1px solid;
   display: flex;
   flex-direction: column;
-  height: 80px;
   justify-content: center;
+  padding: 10px;
+
+  ul {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+  }
+
+  li {
+    cursor: pointer;
+    list-style-type: none;
+  }
 }

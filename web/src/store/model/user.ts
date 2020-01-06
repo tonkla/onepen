@@ -1,14 +1,16 @@
 import { Action, action } from 'easy-peasy'
 
+import User from '../../typings/user'
+
 export interface UserStateModel {
-  name: string
-  set: Action<UserStateModel, string>
+  user: User | null
+  setUser: Action<UserStateModel, User>
 }
 
 const userState: UserStateModel = {
-  name: '',
-  set: action((state, name) => {
-    state.name = name
+  user: null,
+  setUser: action((state, user) => {
+    state.user = user
   }),
 }
 
