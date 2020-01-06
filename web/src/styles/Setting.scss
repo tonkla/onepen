@@ -2,17 +2,9 @@
   border-bottom: #efefef 1px solid;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   padding: 10px;
 
-  ul {
-    display: flex;
-    justify-content: center;
-    margin-top: 10px;
-  }
-
-  li {
-    cursor: pointer;
-    list-style-type: none;
+  .btn-setting {
+    align-self: center;
   }
 }
