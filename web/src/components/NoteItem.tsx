@@ -1,12 +1,13 @@
 import React, { useState } from 'react'
 import IconButton from '@material-ui/core/IconButton'
-import DeleteIcon from '@material-ui/icons/Delete'
 import Button from '@material-ui/core/Button'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
+import TextField from '@material-ui/core/TextField'
+import DeleteIcon from '@material-ui/icons/Delete'
 
 import storage from '../services/storage'
 import { useStoreActions, useStoreState } from '../store'
@@ -20,6 +21,7 @@ interface NoteProps {
 
 const NoteItem = ({ note }: NoteProps) => {
   const [isOpen, setOpen] = useState(false)
+  const [code, setCode] = useState('')
   const [targetNote, setTargetNote] = useState<TinyNote | null>(null)
 
   const folder = useStoreState(state =>
@@ -40,7 +42,7 @@ const NoteItem = ({ note }: NoteProps) => {
 
   const deleteNote = async () => {
     setOpen(false)
-    if (targetNote && folder) {
+    if (targetNote && folder && code.trim() === 'nopen') {
       await storage.removeNote(note.id)
       actionSetSelectedNoteId('')
       actionDeleteNote(targetNote)
@@ -75,8 +77,16 @@ const NoteItem = ({ note }: NoteProps) => {
                 `The note "${
                   targetNote.title.trim() !== '' ? targetNote.title : 'Untitled'
                 }" will be permanently deleted.`}
-              <br /> Are you sure?
+              <br /> Please type "nopen" to confirm deleting.
             </DialogContentText>
+            <TextField
+              autoFocus
+              fullWidth
+              id="confirmation-code"
+              label="Confirmation Code"
+              margin="dense"
+              onBlur={e => setCode(e.target.value)}
+            />
           </DialogContent>
           <DialogActions>
             <Button onClick={closeDialog}>Cancel</Button>
