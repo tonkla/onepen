@@ -41,7 +41,7 @@ const NoteItem = ({ note }: NoteProps) => {
   const deleteNote = async () => {
     setOpen(false)
     if (targetNote && folder) {
-      await storage.removeNote(note)
+      await storage.removeNote(note.id)
       actionSetSelectedNoteId('')
       actionDeleteNote(targetNote)
       actionUpdateFolder({ ...folder, noteIds: folder.noteIds.filter(id => id !== targetNote.id) })
@@ -67,8 +67,8 @@ const NoteItem = ({ note }: NoteProps) => {
         >
           <DeleteIcon fontSize="small" />
         </IconButton>
-        <Dialog aria-labelledby="form-dialog-title" onClose={closeDialog} open={isOpen}>
-          <DialogTitle id="form-dialog-title">Delete Note</DialogTitle>
+        <Dialog aria-labelledby="dialog-delete-note" onClose={closeDialog} open={isOpen}>
+          <DialogTitle id="dialog-delete-note">Delete Note</DialogTitle>
           <DialogContent>
             <DialogContentText>
               {targetNote &&

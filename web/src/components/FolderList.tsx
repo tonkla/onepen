@@ -16,8 +16,9 @@ import FolderItem from './FolderItem'
 import '../styles/FolderList.scss'
 
 const FolderList = () => {
-  const [isOpen, setOpen] = React.useState(false)
+  const [isOpenDialog, setOpenDialog] = React.useState(false)
   const [folderName, setFolderName] = React.useState('')
+
   const createFolder = useStoreActions(actions => actions.folderState.create)
   const folders = useStoreState(state => state.folderState.folders)
 
@@ -36,15 +37,13 @@ const FolderList = () => {
     createFolder(folder)
   }
 
-  const handleClickOpenDialog = () => {
-    setOpen(true)
-  }
-
-  const handleCloseDialog = (btn: string) => {
-    setOpen(false)
-    if (btn === 'add' && folderName.trim() !== '') addFolder(folderName)
+  const handleAddFolder = () => {
+    handleCloseDialog()
+    if (folderName.trim() !== '') addFolder(folderName.trim())
     setFolderName('')
   }
+
+  const handleCloseDialog = () => setOpenDialog(false)
 
   return (
     <div className="folder-list">
@@ -53,15 +52,15 @@ const FolderList = () => {
         <Button
           className="btn"
           color="primary"
-          onClick={handleClickOpenDialog}
+          onClick={() => setOpenDialog(true)}
           size="small"
           startIcon={<AddIcon />}
           variant="outlined"
         >
           Add Folder
         </Button>
-        <Dialog aria-labelledby="form-dialog-title" onClose={handleCloseDialog} open={isOpen}>
-          <DialogTitle id="form-dialog-title">Add Folder</DialogTitle>
+        <Dialog aria-labelledby="dialog-add-folder" onClose={handleCloseDialog} open={isOpenDialog}>
+          <DialogTitle id="dialog-add-folder">Add Folder</DialogTitle>
           <DialogContent>
             <TextField
               autoFocus
@@ -73,8 +72,8 @@ const FolderList = () => {
             />
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => handleCloseDialog('cancel')}>Cancel</Button>
-            <Button color="primary" onClick={() => handleCloseDialog('add')}>
+            <Button onClick={handleCloseDialog}>Cancel</Button>
+            <Button color="primary" onClick={handleAddFolder}>
               Add
             </Button>
           </DialogActions>

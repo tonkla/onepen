@@ -7,4 +7,24 @@ li.folder {
   &:first-child {
     border-top: 1px solid #efefef;
   }
+
+  .left-pane {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+
+    .title {
+      font-size: 1em;
+    }
+  }
+
+  .right-pane {
+    align-self: flex-end;
+    display: flex;
+
+    .btn-folder-settings {
+      color: #ccc;
+      padding: 5px;
+    }
+  }
 }
