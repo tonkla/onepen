@@ -47,7 +47,7 @@ const FolderList = () => {
 
   return (
     <div className="folder-list">
-      <h2>Folders</h2>
+      <h2 className="head">Folders</h2>
       <div className="add-folder">
         <Button
           className="btn"

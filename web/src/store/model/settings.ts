@@ -7,7 +7,7 @@ const defaultSettings: Settings = {
   fontWeight: 300,
   fontSize: '1.3em',
   fontColor: '#444',
-  letterSpacing: '0em',
+  letterSpacing: '0',
   lineHeight: '1.65em',
 }
 

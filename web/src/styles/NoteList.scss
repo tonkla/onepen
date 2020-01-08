@@ -1,7 +1,16 @@
 .note-list {
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
+  width: 320px;
+
+  .add-note,
+  .head {
+    align-self: center;
+  }
+
+  .head {
+    padding: 15px 0;
+  }
 
   ul {
     margin-top: 10px;

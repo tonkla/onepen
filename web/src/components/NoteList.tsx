@@ -59,7 +59,7 @@ const NoteList = () => {
 
   return folder ? (
     <div className="note-list">
-      <h2>{folder.name}</h2>
+      <h2 className="head">{folder.name}</h2>
       <div className="add-note">
         <Button
           className="btn"

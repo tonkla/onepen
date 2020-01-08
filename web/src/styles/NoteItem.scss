@@ -2,7 +2,7 @@ li.note {
   border-bottom: 1px solid #efefef;
   cursor: pointer;
   display: flex;
-  padding: 10px 0;
+  padding: 10px 0 10px 10px;
 
   &:first-child {
     border-top: 1px solid #efefef;
@@ -12,6 +12,7 @@ li.note {
     display: flex;
     flex-direction: column;
     flex-grow: 1;
+    justify-content: center;
 
     .title {
       font-size: 1.2em;
