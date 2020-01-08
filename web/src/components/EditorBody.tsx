@@ -1,6 +1,6 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { createEditor, Node } from 'slate'
-import { Slate, Editable, withReact } from 'slate-react'
+import { Slate, Editable, withReact, ReactEditor } from 'slate-react'
 import { withHistory } from 'slate-history'
 import { deepEqual } from 'fast-equals'
 import { useDebouncedCallback } from 'use-debounce'
@@ -8,7 +8,12 @@ import { useDebouncedCallback } from 'use-debounce'
 import storage from '../services/storage'
 import { useStoreActions, useStoreState } from '../store'
 
-const EditorBody = () => {
+type EditorBodyProps = {
+  callback: Function
+  isFocusing: boolean
+}
+
+const EditorBody = ({ callback, isFocusing }: EditorBodyProps) => {
   const editorBody = useMemo(() => withHistory(withReact(createEditor())), [])
 
   const initialBody = [{ type: 'paragraph', children: [{ text: '' }] }]
@@ -17,9 +22,21 @@ const EditorBody = () => {
   const note = useStoreState(state => state.noteState.note)
   const actionUpdateNote = useStoreActions(actions => actions.noteState.updateNote)
 
+  const focusEditor = useCallback(() => {
+    if (isFocusing && !ReactEditor.isFocused(editorBody)) {
+      ReactEditor.focus(editorBody)
+      editorBody.selection = {
+        anchor: { path: [0, 0], offset: 0 },
+        focus: { path: [0, 0], offset: 0 },
+      }
+      callback()
+    }
+  }, [editorBody, callback, isFocusing])
+
   useEffect(() => {
     if (note) setBody(deserializeMarkdown(note.body))
-  }, [note])
+    focusEditor()
+  }, [note, focusEditor])
 
   // TODO: add Markdown support
   const serializeMarkdown = (nodes: Node[]): string => {
@@ -47,20 +64,33 @@ const EditorBody = () => {
     }
   }, 1000)
 
+  const s = useStoreState(state => state.settingsState.settings)
+
   return (
     <div className="body">
-      <Slate
-        editor={editorBody}
-        value={body}
-        onChange={(v: Node[]) =>
-          setBody(prev => {
-            if (!deepEqual(prev, v)) saveNote(v)
-            return v
-          })
-        }
+      <div
+        style={{
+          fontFamily: s.fontFamily,
+          fontWeight: s.fontWeight,
+          fontSize: s.fontSize,
+          color: s.fontColor,
+          letterSpacing: s.letterSpacing,
+          lineHeight: s.lineHeight,
+        }}
       >
-        <Editable placeholder="Start writing..." />
-      </Slate>
+        <Slate
+          editor={editorBody}
+          value={body}
+          onChange={(v: Node[]) =>
+            setBody(prev => {
+              if (!deepEqual(prev, v)) saveNote(v)
+              return v
+            })
+          }
+        >
+          <Editable placeholder="Start writing..." />
+        </Slate>
+      </div>
     </div>
   )
 }

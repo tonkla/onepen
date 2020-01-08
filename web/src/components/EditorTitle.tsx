@@ -8,7 +8,11 @@ import { useDebouncedCallback } from 'use-debounce'
 import storage from '../services/storage'
 import { useStoreActions, useStoreState } from '../store'
 
-const EditorTitle = () => {
+type EditorTitleProps = {
+  callback: Function
+}
+
+const EditorTitle = ({ callback }: EditorTitleProps) => {
   const editorTitle = useMemo(() => withHistory(withReact(createEditor())), [])
 
   const initialTitle = [{ type: 'paragraph', children: [{ text: '' }] }]
@@ -57,7 +61,15 @@ const EditorTitle = () => {
           })
         }
       >
-        <Editable placeholder="Untitled" />
+        <Editable
+          placeholder="Untitled"
+          onKeyDown={event => {
+            if (event.keyCode === 13) {
+              event.preventDefault()
+              callback()
+            }
+          }}
+        />
       </Slate>
     </div>
   )
