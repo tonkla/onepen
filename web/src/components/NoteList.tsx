@@ -24,7 +24,7 @@ const NoteList = () => {
 
   useEffect(() => {
     ;(async () => {
-      const _notes = folder ? await storage.findNotesByIds(folder.noteIds) : []
+      const _notes = folder ? await storage.getNotes(folder.noteIds) : []
       actionSetNotes(_notes)
     })()
   }, [folder, actionSetNotes])

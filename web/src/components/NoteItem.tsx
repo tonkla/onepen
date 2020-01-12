@@ -43,7 +43,7 @@ const NoteItem = ({ note }: NoteProps) => {
   const deleteNote = async () => {
     setOpen(false)
     if (targetNote && folder && code.trim() === 'nopen') {
-      await storage.removeNote(note.id)
+      await storage.delNote(note.id)
       actionSetSelectedNoteId('')
       actionDeleteNote(targetNote)
       actionUpdateFolder({ ...folder, noteIds: folder.noteIds.filter(id => id !== targetNote.id) })

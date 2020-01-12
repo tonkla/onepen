@@ -64,7 +64,7 @@ const FolderItem = ({ folder }: FolderProps) => {
     if (targetFolder && folderName.trim() !== '' && folderName === targetFolder.name) {
       const asyncTasks: Promise<void>[] = []
       targetFolder.noteIds.forEach(id => {
-        asyncTasks.push(storage.removeNote(id))
+        asyncTasks.push(storage.delNote(id))
       })
       await Promise.all(asyncTasks)
 

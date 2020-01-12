@@ -13,13 +13,16 @@ const defaultSettings: Settings = {
 
 export interface SettingsStateModel {
   settings: Settings
+  updatedAt: string
   set: Action<SettingsStateModel, Settings>
 }
 
 const settingsState: SettingsStateModel = {
   settings: defaultSettings,
+  updatedAt: '',
   set: action((state, settings) => {
     state.settings = settings
+    state.updatedAt = new Date().toISOString()
   }),
 }
 

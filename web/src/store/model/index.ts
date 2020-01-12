@@ -22,7 +22,7 @@ const model: StoreModel = persist(
     settingsState,
     userState,
   },
-  { storage: 'localStorage', blacklist: ['noteState'] }
+  { storage: 'localStorage', blacklist: ['noteState', 'userState'] }
 )
 
 export default model
