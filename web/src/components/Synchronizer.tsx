@@ -12,8 +12,8 @@ const Synchronizer = () => {
 
   async function sync() {
     if (!user || !folder) return
-    await synchronizer.syncNotes(user, folder.noteIds)
-    await synchronizer.syncStates(user)
+    await synchronizer.syncNotes(user.uid, folder.noteIds)
+    await synchronizer.syncStates(user.uid)
   }
 
   return (

@@ -1,42 +1,45 @@
 import firestore from './firebase/firestore'
 import storage from './storage'
-import User from '../typings/user'
 import { STATE_KEYS } from '../constants'
 
-export async function syncNote(user: User, nid: string) {
+export async function syncNote(uid: string, nid: string) {
   const local = await storage.getNote(nid)
-  const remote = await firestore.getNote(user, nid)
+  const remote = await firestore.getNote(uid, nid)
   if (local && !remote) {
-    await firestore.setNote(user, local)
+    await firestore.setNote(uid, local)
   } else if (remote && !local) {
     await storage.setNote(remote)
   } else if (remote && local) {
-    if (local.updatedAt > remote.updatedAt) await firestore.setNote(user, local)
-    else if (local.updatedAt < remote.updatedAt) await storage.setNote(remote)
+    if (new Date(local.updatedAt) > new Date(remote.updatedAt)) await firestore.setNote(uid, local)
+    else if (new Date(local.updatedAt) < new Date(remote.updatedAt)) await storage.setNote(remote)
+  } else {
+    // await firestore.delNote(uid, nid)
   }
 }
 
-export async function syncNotes(user: User, noteIds: string[]) {
-  await Promise.all(noteIds.map(nid => syncNote(user, nid)))
+export async function syncNotes(uid: string, noteIds: string[]) {
+  await Promise.all(noteIds.map(nid => syncNote(uid, nid)))
 }
 
-export async function syncState(user: User, key: string) {
+export async function syncState(uid: string, key: string) {
   const local = await storage.getState(key)
-  const remote = await firestore.getState(user, key)
+  const remote = await firestore.getState(uid, key)
   if (local.trim() !== '' && remote.trim() === '') {
-    await firestore.setState(user, key, local)
+    await firestore.setState(uid, key, local)
   } else if (remote.trim() !== '' && local.trim() === '') {
     await storage.setState(key, remote)
   } else if (remote.trim() !== '' && local.trim() !== '') {
     const l = JSON.parse(local)
     const r = JSON.parse(remote)
-    if (l.updatedAt > r.updatedAt) await firestore.setState(user, key, local)
-    else if (l.updatedAt < r.updatedAt) await storage.setState(key, remote)
+    if (new Date(l.data.updatedAt) > new Date(r.data.updatedAt))
+      await firestore.setState(uid, key, local)
+    else if (new Date(l.data.updatedAt) < new Date(r.data.updatedAt))
+      await storage.setState(key, remote)
   }
 }
 
-export async function syncStates(user: User) {
-  await Promise.all(STATE_KEYS.map(key => syncState(user, key)))
+export async function syncStates(uid: string) {
+  await Promise.all(STATE_KEYS.map(key => syncState(uid, key)))
 }
 
 export default {
