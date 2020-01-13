@@ -3,7 +3,7 @@ import { Action, action } from 'easy-peasy'
 import Settings from '../../typings/settings'
 
 const defaultSettings: Settings = {
-  fontFamily: 'Sarabun',
+  fontFamily: 'Prompt',
   fontWeight: 300,
   fontSize: '1.3em',
   fontColor: '#444',
