@@ -1,7 +1,8 @@
 import localforage from 'localforage'
 
+import Folder from '../typings/folder'
 import Note from '../typings/note'
-import { APP_NAME, NOTE_KEY_PREFIX } from '../constants'
+import { APP_NAME, NOTE_KEY_PREFIX, TRASH_KEY } from '../constants'
 
 localforage.config({
   driver: localforage.LOCALSTORAGE,
@@ -14,11 +15,32 @@ export async function getNote(id: string): Promise<Note | null> {
 }
 
 export async function setNote(note: Note) {
-  await localforage.setItem(`${NOTE_KEY_PREFIX}${note.id}`, note)
+  await localforage.setItem(`${NOTE_KEY_PREFIX}${note.id}`, {
+    ...note,
+    updatedAt: new Date().toISOString(),
+  })
 }
 
 export async function delNote(id: string) {
-  await localforage.removeItem(`${NOTE_KEY_PREFIX}${id}`)
+  const note = await getNote(id)
+  if (note) {
+    await setTrash(note)
+    await localforage.removeItem(`${NOTE_KEY_PREFIX}${id}`)
+  }
+}
+
+export async function getTrash(): Promise<any> {
+  return (await localforage.getItem(TRASH_KEY)) || []
+}
+
+export async function setTrash(item: Note | Folder) {
+  const trash = await getTrash()
+  if (trash) {
+    await localforage.setItem(TRASH_KEY, [
+      { ...item, updatedAt: new Date().toISOString() },
+      ...trash,
+    ])
+  }
 }
 
 export async function getNotes(ids: string[]): Promise<Note[]> {
@@ -53,5 +75,7 @@ export default {
   setNotes,
   getState,
   setState,
+  getTrash,
+  setTrash,
   clear,
 }

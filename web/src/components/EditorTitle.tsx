@@ -39,11 +39,7 @@ const EditorTitle = ({ callback }: EditorTitleProps) => {
 
   const [saveNote] = useDebouncedCallback(async (v: Node[]) => {
     if (note) {
-      const newNote = {
-        ...note,
-        title: serializeText(v),
-        updatedAt: new Date().toISOString(),
-      }
+      const newNote = { ...note, title: serializeText(v) }
       actionUpdateNote(newNote)
       await storage.setNote(newNote)
     }

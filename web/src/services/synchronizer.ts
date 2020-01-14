@@ -12,8 +12,6 @@ export async function syncNote(uid: string, nid: string) {
   } else if (remote && local) {
     if (new Date(local.updatedAt) > new Date(remote.updatedAt)) await firestore.setNote(uid, local)
     else if (new Date(local.updatedAt) < new Date(remote.updatedAt)) await storage.setNote(remote)
-  } else {
-    // await firestore.delNote(uid, nid)
   }
 }
 

@@ -54,11 +54,7 @@ const EditorBody = ({ callback, isFocusing }: EditorBodyProps) => {
 
   const [saveNote] = useDebouncedCallback(async (v: Node[]) => {
     if (note) {
-      const newNote = {
-        ...note,
-        body: serializeMarkdown(v),
-        updatedAt: new Date().toISOString(),
-      }
+      const newNote = { ...note, body: serializeMarkdown(v) }
       actionUpdateNote(newNote)
       await storage.setNote(newNote)
     }

@@ -6,3 +6,4 @@ export const STATE_KEYS = [
   '[onepen]@selectedState',
   '[onepen]@settingsState',
 ]
+export const TRASH_KEY = 'trash'

@@ -22,31 +22,25 @@ interface NoteProps {
 const NoteItem = ({ note }: NoteProps) => {
   const [isOpen, setOpen] = useState(false)
   const [code, setCode] = useState('')
-  const [targetNote, setTargetNote] = useState<TinyNote | null>(null)
 
-  const folder = useStoreState(state =>
-    targetNote ? state.folderState.folders.find(f => f.id === targetNote.parent) : null
-  )
-  const actionSetSelectedNoteId = useStoreActions(actions => actions.selectedState.setNoteId)
-  const actionDeleteNote = useStoreActions(actions => actions.noteState.deleteNote)
-  const actionUpdateFolder = useStoreActions(actions => actions.folderState.update)
+  const folder = useStoreState(s => s.folderState.folders.find(f => f.id === note.parent))
+  const actionSetSelectedNoteId = useStoreActions(a => a.selectedState.setNoteId)
+  const actionDeleteNote = useStoreActions(a => a.noteState.deleteNote)
+  const actionUpdateFolder = useStoreActions(a => a.folderState.update)
 
   const show = (id: string) => actionSetSelectedNoteId(id)
 
-  const openDialog = (note: TinyNote) => {
-    setTargetNote(note)
-    setOpen(true)
-  }
+  const openDialog = () => setOpen(true)
 
   const closeDialog = () => setOpen(false)
 
   const deleteNote = async () => {
     setOpen(false)
-    if (targetNote && folder && code.trim() === 'nopen') {
+    if (note && folder && code.trim() === 'nopen') {
       await storage.delNote(note.id)
       actionSetSelectedNoteId('')
-      actionDeleteNote(targetNote)
-      actionUpdateFolder({ ...folder, noteIds: folder.noteIds.filter(id => id !== targetNote.id) })
+      actionDeleteNote(note)
+      actionUpdateFolder({ ...folder, noteIds: folder.noteIds.filter(id => id !== note.id) })
     }
   }
 
@@ -61,22 +55,16 @@ const NoteItem = ({ note }: NoteProps) => {
         </div>
       </div>
       <div className="right-pane">
-        <IconButton
-          aria-label="delete"
-          className="btn-delete"
-          onClick={() => openDialog(note)}
-          title="Delete"
-        >
+        <IconButton aria-label="delete" className="btn-delete" onClick={openDialog} title="Delete">
           <DeleteIcon fontSize="small" />
         </IconButton>
         <Dialog aria-labelledby="dialog-delete-note" onClose={closeDialog} open={isOpen}>
           <DialogTitle id="dialog-delete-note">Delete Note</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              {targetNote &&
-                `The note "${
-                  targetNote.title.trim() !== '' ? targetNote.title : 'Untitled'
-                }" will be permanently deleted.`}
+              {`The note "${
+                note.title.trim() !== '' ? note.title : 'Untitled'
+              }" will be permanently deleted.`}
               <br /> Please type "nopen" to confirm deleting.
             </DialogContentText>
             <TextField
