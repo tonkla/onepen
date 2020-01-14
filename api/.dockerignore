@@ -1,5 +1,0 @@
-.dockerignore
-.env
-.env.example
-Dockerfile
-Makefile
