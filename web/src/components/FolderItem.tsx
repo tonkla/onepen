@@ -32,7 +32,6 @@ const FolderItem = ({ folder }: FolderProps) => {
   const [isOpenDialogDelete, setOpenDialogDelete] = useState(false)
   const [isOpenDialogRename, setOpenDialogRename] = useState(false)
   const [folderName, setFolderName] = useState('')
-  const [targetFolder, setTargetFolder] = useState<Folder | null>(null)
 
   const handleClick = (id: string) => {
     if (id !== selectedFolderId) {
@@ -41,9 +40,8 @@ const FolderItem = ({ folder }: FolderProps) => {
     }
   }
 
-  const handleClickSettings = (event: React.MouseEvent<HTMLButtonElement>, folder: Folder) => {
+  const handleClickSettings = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
-    setTargetFolder(folder)
   }
 
   const handleCloseDialog = () => {
@@ -54,29 +52,28 @@ const FolderItem = ({ folder }: FolderProps) => {
   }
 
   const handleRename = () => {
-    if (targetFolder && folderName.trim() !== '' && folderName !== targetFolder.name) {
-      updateFolder({ ...targetFolder, name: folderName.trim() })
+    if (folder && folderName.trim() !== '' && folderName !== folder.name) {
+      updateFolder({ ...folder, name: folderName.trim() })
     }
     handleCloseDialog()
   }
 
   const handleDelete = async () => {
-    if (targetFolder && folderName.trim() !== '' && folderName === targetFolder.name) {
-      const asyncTasks: Promise<void>[] = []
-      targetFolder.noteIds.forEach(id => {
-        asyncTasks.push(storage.delNote(id))
-      })
-      await Promise.all(asyncTasks)
-
-      if (targetFolder.id === selectedFolderId) {
+    if (folder && folder.name === folderName) {
+      await Promise.all(folder.noteIds.map(id => storage.delNote(id)))
+      if (folder.id === selectedFolderId) {
         setFolderId('')
         setNoteId('')
       }
       // First, finish all child component states
       handleCloseDialog()
       // Then update parent component states
-      deleteFolder(targetFolder)
-    } else handleCloseDialog()
+      deleteFolder(folder)
+      // Throw the folder to a trash
+      await storage.setTrash(folder)
+    }
+    // Note: don't remove `else`
+    else handleCloseDialog()
   }
 
   return (
@@ -90,7 +87,7 @@ const FolderItem = ({ folder }: FolderProps) => {
         <IconButton
           aria-label="folder-settings"
           className="btn-folder-settings"
-          onClick={e => handleClickSettings(e, folder)}
+          onClick={handleClickSettings}
           title="Folder Settings"
         >
           <MoreHoriz fontSize="small" />
@@ -121,7 +118,7 @@ const FolderItem = ({ folder }: FolderProps) => {
               label="Folder Name"
               margin="dense"
               onBlur={e => setFolderName(e.target.value)}
-              defaultValue={targetFolder?.name}
+              defaultValue={folder.name}
             />
           </DialogContent>
           <DialogActions>
@@ -140,8 +137,7 @@ const FolderItem = ({ folder }: FolderProps) => {
           <DialogTitle id="dialog-delete-folder">Delete Note</DialogTitle>
           <DialogContent>
             <DialogContentText>
-              {targetFolder &&
-                `The folder "${targetFolder.name}" and its notes will be permanently deleted.`}
+              {`The folder "${folder.name}" and its notes will be permanently deleted.`}
               <br /> Please type the folder name to confirm deleting.
             </DialogContentText>
             <TextField

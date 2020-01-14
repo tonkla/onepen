@@ -19,8 +19,8 @@ const Editor = () => {
   const actionSetNote = useStoreActions(actions => actions.noteState.setNote)
 
   const blankNote: Note = {
-    parent: selectedFolderId,
     id: selectedNoteId,
+    parent: selectedFolderId,
     title: '',
     body: '',
     createdAt: new Date().toISOString(),

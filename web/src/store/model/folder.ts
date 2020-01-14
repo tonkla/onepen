@@ -14,12 +14,12 @@ const folderState: FolderStateModel = {
   folders: [],
   updatedAt: '',
   create: action((state, folder) => {
-    state.folders = [folder, ...state.folders]
+    state.folders = [{ ...folder, updatedAt: new Date().toISOString() }, ...state.folders]
     state.updatedAt = new Date().toISOString()
   }),
   update: action((state, folder) => {
     const rest = state.folders.filter(f => f.id !== folder.id)
-    state.folders = [folder, ...rest]
+    state.folders = [{ ...folder, updatedAt: new Date().toISOString() }, ...rest]
     state.updatedAt = new Date().toISOString()
   }),
   delete: action((state, folder) => {

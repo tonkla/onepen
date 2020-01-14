@@ -3,4 +3,6 @@ export default interface Folder {
   name: string
   parent: string
   noteIds: string[]
+  createdAt: string
+  updatedAt: string
 }

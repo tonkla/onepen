@@ -38,8 +38,8 @@ const NoteList = () => {
       if (id.indexOf('-') < 0 && id.indexOf('_') < 0) break
     }
     const note: Note = {
-      parent: folder.id,
       id,
+      parent: folder.id,
       title: '',
       body: '',
       createdAt: new Date().toISOString(),

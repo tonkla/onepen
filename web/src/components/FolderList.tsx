@@ -33,6 +33,8 @@ const FolderList = () => {
       name,
       parent: '',
       noteIds: [],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
     }
     createFolder(folder)
   }
