@@ -1,8 +1,9 @@
 import firebase from 'firebase/app'
 import 'firebase/firestore'
 
+import Folder from '../../typings/folder'
 import Note from '../../typings/note'
-import { NOTE_KEY_PREFIX, STATE_KEY_PREFIX } from '../../constants'
+import { NOTE_KEY_PREFIX, STATE_KEY_PREFIX, TRASH_KEY } from '../../constants'
 
 const db = firebase.firestore()
 
@@ -82,6 +83,31 @@ export async function setState(uid: string, key: string, value: string) {
   }
 }
 
+export async function getTrash(uid: string): Promise<(Note | Folder)[]> {
+  try {
+    const doc = await db
+      .collection(uid)
+      .doc(TRASH_KEY)
+      .get()
+    const data: any = doc.data()
+    return doc.exists ? data.items : []
+  } catch (e) {
+    // TODO: log error
+    return []
+  }
+}
+
+export async function setTrash(uid: string, trash: (Note | Folder)[]) {
+  try {
+    await db
+      .collection(uid)
+      .doc(TRASH_KEY)
+      .set({ items: trash })
+  } catch (e) {
+    // TODO: log error
+  }
+}
+
 export default {
   getNote,
   setNote,
@@ -89,4 +115,6 @@ export default {
   getNotes,
   getState,
   setState,
+  getTrash,
+  setTrash,
 }

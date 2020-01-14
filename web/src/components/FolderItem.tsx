@@ -70,7 +70,7 @@ const FolderItem = ({ folder }: FolderProps) => {
       // Then update parent component states
       deleteFolder(folder)
       // Throw the folder to a trash
-      await storage.setTrash(folder)
+      await storage.remove(folder)
     }
     // Note: don't remove `else`
     else handleCloseDialog()

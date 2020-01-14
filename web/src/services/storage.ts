@@ -24,16 +24,20 @@ export async function setNote(note: Note) {
 export async function delNote(id: string) {
   const note = await getNote(id)
   if (note) {
-    await setTrash(note)
+    await remove(note)
     await localforage.removeItem(`${NOTE_KEY_PREFIX}${id}`)
   }
 }
 
-export async function getTrash(): Promise<any> {
+export async function getTrash(): Promise<(Note | Folder)[]> {
   return (await localforage.getItem(TRASH_KEY)) || []
 }
 
-export async function setTrash(item: Note | Folder) {
+export async function setTrash(trash: (Note | Folder)[]) {
+  await localforage.setItem(TRASH_KEY, trash)
+}
+
+export async function remove(item: Note | Folder) {
   const trash = await getTrash()
   if (trash) {
     await localforage.setItem(TRASH_KEY, [
@@ -77,5 +81,6 @@ export default {
   setState,
   getTrash,
   setTrash,
+  remove,
   clear,
 }
