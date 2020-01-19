@@ -5,7 +5,6 @@ import { withHistory } from 'slate-history'
 import { deepEqual } from 'fast-equals'
 import { useDebouncedCallback } from 'use-debounce'
 
-import storage from '../services/storage'
 import { useStoreActions, useStoreState } from '../store'
 
 type EditorTitleProps = {
@@ -18,8 +17,8 @@ const EditorTitle = ({ callback }: EditorTitleProps) => {
   const initialTitle = [{ type: 'paragraph', children: [{ text: '' }] }]
   const [title, setTitle] = useState<Node[]>(initialTitle)
 
-  const note = useStoreState(state => state.noteState.note)
-  const actionUpdateNote = useStoreActions(actions => actions.noteState.updateNote)
+  const note = useStoreState(s => s.noteState.note)
+  const updateNote = useStoreActions(a => a.noteState.update)
 
   useEffect(() => {
     if (note) setTitle(deserializeText(note.title))
@@ -38,11 +37,7 @@ const EditorTitle = ({ callback }: EditorTitleProps) => {
   }
 
   const [saveNote] = useDebouncedCallback(async (v: Node[]) => {
-    if (note) {
-      const newNote = { ...note, title: serializeText(v) }
-      actionUpdateNote(newNote)
-      await storage.setNote(newNote)
-    }
+    if (note) updateNote({ ...note, title: serializeText(v) })
   }, 500)
 
   return (

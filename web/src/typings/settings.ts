@@ -5,4 +5,6 @@ export default interface Settings {
   fontColor?: string
   letterSpacing?: string
   lineHeight?: string
+  owner?: string
+  updatedAt?: string
 }

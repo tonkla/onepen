@@ -12,7 +12,7 @@ import '../styles/Main.scss'
 const Main = () => {
   const [isLoaded, setLoaded] = useState(false)
 
-  const setUser = useStoreActions(actions => actions.userState.setUser)
+  const setUser = useStoreActions(a => a.userState.set)
 
   useEffect(() => {
     ;(async () => {

@@ -5,7 +5,6 @@ import { withHistory } from 'slate-history'
 import { deepEqual } from 'fast-equals'
 import { useDebouncedCallback } from 'use-debounce'
 
-import storage from '../services/storage'
 import { useStoreActions, useStoreState } from '../store'
 
 type EditorBodyProps = {
@@ -19,8 +18,8 @@ const EditorBody = ({ callback, isFocusing }: EditorBodyProps) => {
   const initialBody = [{ type: 'paragraph', children: [{ text: '' }] }]
   const [body, setBody] = useState<Node[]>(initialBody)
 
-  const note = useStoreState(state => state.noteState.note)
-  const actionUpdateNote = useStoreActions(actions => actions.noteState.updateNote)
+  const note = useStoreState(s => s.noteState.note)
+  const updateNote = useStoreActions(a => a.noteState.update)
 
   const focusEditor = useCallback(() => {
     if (isFocusing && !ReactEditor.isFocused(editorBody)) {
@@ -53,14 +52,10 @@ const EditorBody = ({ callback, isFocusing }: EditorBodyProps) => {
   }
 
   const [saveNote] = useDebouncedCallback(async (v: Node[]) => {
-    if (note) {
-      const newNote = { ...note, body: serializeMarkdown(v) }
-      actionUpdateNote(newNote)
-      await storage.setNote(newNote)
-    }
+    if (note) updateNote({ ...note, body: serializeMarkdown(v) })
   }, 1000)
 
-  const s = useStoreState(state => state.settingsState.settings)
+  const s = useStoreState(s => s.settingsState.settings)
 
   return (
     <div className="body">

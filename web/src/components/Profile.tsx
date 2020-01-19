@@ -5,7 +5,7 @@ import { useStoreState } from '../store'
 import '../styles/Profile.scss'
 
 const Profile = () => {
-  const user = useStoreState(state => state.userState.user)
+  const user = useStoreState(s => s.userState.user)
   return user ? (
     <div className="profile">
       <img src={user.photoUrl} alt={user.name} title={user.name} className="avatar" />

@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import shortid from 'shortid'
+import generate from 'nanoid/generate'
 import Button from '@material-ui/core/Button'
 import AddIcon from '@material-ui/icons/Add'
 
@@ -12,49 +12,39 @@ import NoteItem from './NoteItem'
 import '../styles/NoteList.scss'
 
 const NoteList = () => {
-  const selectedFolderId = useStoreState(state => state.selectedState.folderId)
-  const folder = useStoreState(state =>
-    state.folderState.folders.find(f => f.id === selectedFolderId)
-  )
-  const notes = useStoreState(state => state.noteState.notes)
+  const folderId = useStoreState(s => s.selectedState.folderId)
+  const folder = useStoreState(s => s.folderState.folders.find(f => f.id === folderId))
+  const notes = useStoreState(s => s.noteState.notes)
+  const user = useStoreState(s => s.userState.user)
 
-  const actionUpdateFolder = useStoreActions(actions => actions.folderState.update)
-  const actionSetSelectedNoteId = useStoreActions(actions => actions.selectedState.setNoteId)
-  const actionSetNotes = useStoreActions(actions => actions.noteState.setNotes)
+  const updateFolder = useStoreActions(a => a.folderState.update)
+  const createNote = useStoreActions(a => a.noteState.create)
+  const setNotes = useStoreActions(a => a.noteState.setNotes)
+  const setNoteId = useStoreActions(a => a.selectedState.setNoteId)
 
   useEffect(() => {
     ;(async () => {
       const _notes = folder ? await storage.getNotes(folder.noteIds) : []
-      actionSetNotes(_notes)
+      setNotes(_notes)
     })()
-  }, [folder, actionSetNotes])
+  }, [folder, setNotes])
 
-  const handleClickAddNote = async () => {
-    if (!folder) return
+  const handleCreateNote = async () => {
+    if (!user || !folder) return
 
-    let id = ''
-    while (true) {
-      id = shortid.generate()
-      if (id.indexOf('-') < 0 && id.indexOf('_') < 0) break
-    }
+    const alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+    const id = generate(alphabet, 13)
     const note: Note = {
       id,
       parent: folder.id,
+      owner: user.uid,
       title: '',
       body: '',
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
     }
-    // First, save note in localStorage
-    await storage.setNote(note)
-    // Then update the editor UI state
-    actionSetSelectedNoteId(note.id)
-
-    // Second, add the new note ID into parent folder
-    folder.noteIds.push(id)
-    actionUpdateFolder(folder)
-    // Then update the notes list UI state
-    actionSetNotes([note, ...notes])
+    setNoteId(note.id)
+    createNote(note)
+    updateFolder({ ...folder, noteIds: [id, ...folder.noteIds] })
   }
 
   return folder ? (
@@ -64,7 +54,7 @@ const NoteList = () => {
         <Button
           className="btn"
           color="primary"
-          onClick={handleClickAddNote}
+          onClick={handleCreateNote}
           size="small"
           startIcon={<AddIcon />}
           variant="outlined"

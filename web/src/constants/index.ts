@@ -1,9 +1,6 @@
 export const APP_NAME = 'onepen'
-export const NOTE_KEY_PREFIX = 'note-'
-export const STATE_KEY_PREFIX = 'state-'
-export const STATE_KEYS = [
-  '[onepen]@folderState',
-  '[onepen]@selectedState',
-  '[onepen]@settingsState',
-]
-export const TRASH_KEY = 'trash'
+export const KEY_FOLDER = 'folder-'
+export const KEY_FOLDERS = 'folders'
+export const KEY_NOTE = 'note-'
+export const KEY_SETTINGS = 'settings'
+export const KEY_TRASH = 'trash'

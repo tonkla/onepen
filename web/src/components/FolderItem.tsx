@@ -11,7 +11,6 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 import TextField from '@material-ui/core/TextField'
 import MoreHoriz from '@material-ui/icons/MoreHoriz'
 
-import storage from '../services/storage'
 import { useStoreActions, useStoreState } from '../store'
 import Folder from '../typings/folder'
 
@@ -22,11 +21,11 @@ interface FolderProps {
 }
 
 const FolderItem = ({ folder }: FolderProps) => {
-  const selectedFolderId = useStoreState(state => state.selectedState.folderId)
-  const setFolderId = useStoreActions(actions => actions.selectedState.setFolderId)
-  const setNoteId = useStoreActions(actions => actions.selectedState.setNoteId)
-  const updateFolder = useStoreActions(actions => actions.folderState.update)
-  const deleteFolder = useStoreActions(actions => actions.folderState.delete)
+  const selectedFolderId = useStoreState(s => s.selectedState.folderId)
+  const setFolderId = useStoreActions(a => a.selectedState.setFolderId)
+  const setNoteId = useStoreActions(a => a.selectedState.setNoteId)
+  const updateFolder = useStoreActions(a => a.folderState.update)
+  const deleteFolder = useStoreActions(a => a.folderState.delete)
 
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
   const [isOpenDialogDelete, setOpenDialogDelete] = useState(false)
@@ -60,17 +59,14 @@ const FolderItem = ({ folder }: FolderProps) => {
 
   const handleDelete = async () => {
     if (folder && folder.name === folderName) {
-      await Promise.all(folder.noteIds.map(id => storage.delNote(id)))
       if (folder.id === selectedFolderId) {
         setFolderId('')
         setNoteId('')
       }
-      // First, finish all child component states
+      // Finish all child component states
       handleCloseDialog()
       // Then update parent component states
       deleteFolder(folder)
-      // Throw the folder to a trash
-      await storage.remove(folder)
     }
     // Note: don't remove `else`
     else handleCloseDialog()

@@ -31,8 +31,10 @@ const Setting = () => {
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null)
   const [tmp, setTmp] = useState<Settings>()
 
-  const s = useStoreState(state => state.settingsState.settings)
-  const setSettings = useStoreActions(actions => actions.settingsState.set)
+  const s = useStoreState(s => s.settingsState.settings)
+  const user = useStoreState(s => s.userState.user)
+
+  const update = useStoreActions(a => a.settingsState.update)
 
   const handleCloseDialog = () => {
     setOpenDialogSetting(false)
@@ -40,17 +42,13 @@ const Setting = () => {
     setAnchorEl(null)
   }
 
-  const handleOpenDialogSetting = () => {
-    setOpenDialogSetting(true)
-  }
+  const handleOpenDialogSetting = () => setOpenDialogSetting(true)
 
-  const handleOpenDialogLogout = () => {
-    setOpenDialogLogout(true)
-  }
+  const handleOpenDialogLogout = () => setOpenDialogLogout(true)
 
   const handleSaveSettings = () => {
     handleCloseDialog()
-    if (tmp) setSettings({ ...s, ...tmp })
+    if (user && tmp) update({ ...s, ...tmp, owner: user.uid })
   }
 
   const handleLogout = async () => {

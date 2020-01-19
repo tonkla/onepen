@@ -3,7 +3,6 @@ import { HeadProvider, Link } from 'react-head'
 
 import storage from '../services/storage'
 import { useStoreActions, useStoreState } from '../store'
-import Note from '../typings/note'
 
 import EditorTitle from './EditorTitle'
 import EditorBody from './EditorBody'
@@ -13,31 +12,22 @@ import '../styles/Editor.scss'
 const Editor = () => {
   const [isFocusing, setFocus] = React.useState(false)
 
-  const selectedFolderId = useStoreState(state => state.selectedState.folderId)
-  const selectedNoteId = useStoreState(state => state.selectedState.noteId)
+  const folderId = useStoreState(s => s.selectedState.folderId)
+  const noteId = useStoreState(s => s.selectedState.noteId)
 
-  const actionSetNote = useStoreActions(actions => actions.noteState.setNote)
-
-  const blankNote: Note = {
-    id: selectedNoteId,
-    parent: selectedFolderId,
-    title: '',
-    body: '',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  }
+  const setNote = useStoreActions(a => a.noteState.setNote)
 
   useEffect(() => {
     ;(async () => {
-      const note = await storage.getNote(blankNote.id)
-      actionSetNote(note || blankNote)
+      const note = await storage.getNote(noteId)
+      if (note) setNote(note)
     })()
-  }, [blankNote, actionSetNote])
+  }, [noteId, setNote])
 
-  const s = useStoreState(state => state.settingsState.settings)
+  const s = useStoreState(s => s.settingsState.settings)
   const googleFonts = `https://fonts.googleapis.com/css?family=${s.fontFamily}:${s.fontWeight}`
 
-  return selectedFolderId && selectedNoteId ? (
+  return folderId && noteId ? (
     <div className="editor">
       <HeadProvider>
         <Link rel="stylesheet" href={googleFonts} />

@@ -9,7 +9,6 @@ import DialogTitle from '@material-ui/core/DialogTitle'
 import TextField from '@material-ui/core/TextField'
 import DeleteIcon from '@material-ui/icons/Delete'
 
-import storage from '../services/storage'
 import { useStoreActions, useStoreState } from '../store'
 import { TinyNote } from '../typings/note'
 
@@ -24,23 +23,22 @@ const NoteItem = ({ note }: NoteProps) => {
   const [code, setCode] = useState('')
 
   const folder = useStoreState(s => s.folderState.folders.find(f => f.id === note.parent))
-  const actionSetSelectedNoteId = useStoreActions(a => a.selectedState.setNoteId)
-  const actionDeleteNote = useStoreActions(a => a.noteState.deleteNote)
-  const actionUpdateFolder = useStoreActions(a => a.folderState.update)
+  const setNoteId = useStoreActions(a => a.selectedState.setNoteId)
+  const deleteNote = useStoreActions(a => a.noteState.delete)
+  const updateFolder = useStoreActions(a => a.folderState.update)
 
-  const show = (id: string) => actionSetSelectedNoteId(id)
+  const show = (id: string) => setNoteId(id)
 
   const openDialog = () => setOpen(true)
 
   const closeDialog = () => setOpen(false)
 
-  const deleteNote = async () => {
+  const handleDelete = async () => {
     setOpen(false)
     if (note && folder && code.trim() === 'nopen') {
-      await storage.delNote(note.id)
-      actionSetSelectedNoteId('')
-      actionDeleteNote(note)
-      actionUpdateFolder({ ...folder, noteIds: folder.noteIds.filter(id => id !== note.id) })
+      setNoteId('')
+      deleteNote(note)
+      updateFolder({ ...folder, noteIds: folder.noteIds.filter(id => id !== note.id) })
     }
   }
 
@@ -78,7 +76,7 @@ const NoteItem = ({ note }: NoteProps) => {
           </DialogContent>
           <DialogActions>
             <Button onClick={closeDialog}>Cancel</Button>
-            <Button color="primary" onClick={deleteNote}>
+            <Button color="primary" onClick={handleDelete}>
               Delete
             </Button>
           </DialogActions>

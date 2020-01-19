@@ -16,12 +16,12 @@
     "fast-equals": "^2.0.0",
     "firebase": "^7.6.1",
     "localforage": "^1.7.3",
-    "node-sass": "^4.13.0",
+    "nanoid": "^2.1.9",
+    "node-sass": "^4.13.1",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-head": "^3.1.1",
     "react-scripts": "3.3.0",
-    "shortid": "^2.2.15",
     "slate": "^0.57.1",
     "slate-history": "^0.57.1",
     "slate-react": "^0.57.1",
@@ -29,10 +29,10 @@
   },
   "devDependencies": {
     "@types/jest": "^24.0.25",
+    "@types/nanoid": "^2.1.0",
     "@types/node": "^13.1.4",
     "@types/react": "^16.9.17",
     "@types/react-dom": "^16.9.4",
-    "@types/shortid": "^0.0.29",
     "typescript": "^3.7.4"
   },
   "eslintConfig": {

@@ -1,5 +1,6 @@
-import { Action, action } from 'easy-peasy'
+import { Action, action, Thunk, thunk } from 'easy-peasy'
 
+import firestore from '../../services/firebase/firestore'
 import Settings from '../../typings/settings'
 
 const defaultSettings: Settings = {
@@ -13,16 +14,19 @@ const defaultSettings: Settings = {
 
 export interface SettingsStateModel {
   settings: Settings
-  updatedAt: string
-  set: Action<SettingsStateModel, Settings>
+  update: Thunk<SettingsStateModel, Settings>
+  _update: Action<SettingsStateModel, Settings>
 }
 
 const settingsState: SettingsStateModel = {
   settings: defaultSettings,
-  updatedAt: '',
-  set: action((state, settings) => {
+  update: thunk(async (actions, settings) => {
+    const _s = { ...settings, updatedAt: new Date().toISOString() }
+    actions._update(_s)
+    if (_s.owner) await firestore.setSettings(_s.owner, _s)
+  }),
+  _update: action((state, settings) => {
     state.settings = settings
-    state.updatedAt = new Date().toISOString()
   }),
 }
 

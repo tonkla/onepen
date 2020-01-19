@@ -1,5 +1,5 @@
 import React from 'react'
-import shortid from 'shortid'
+import generate from 'nanoid/generate'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
 import Dialog from '@material-ui/core/Dialog'
@@ -19,33 +19,32 @@ const FolderList = () => {
   const [isOpenDialog, setOpenDialog] = React.useState(false)
   const [folderName, setFolderName] = React.useState('')
 
-  const createFolder = useStoreActions(actions => actions.folderState.create)
-  const folders = useStoreState(state => state.folderState.folders)
+  const folders = useStoreState(s => s.folderState.folders)
+  const user = useStoreState(s => s.userState.user)
 
-  const addFolder = (name: string) => {
-    let id = ''
-    while (true) {
-      id = shortid.generate()
-      if (id.indexOf('-') < 0 && id.indexOf('_') < 0) break
-    }
-    const folder: Folder = {
-      id,
-      name,
-      parent: '',
-      noteIds: [],
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    }
-    createFolder(folder)
-  }
-
-  const handleAddFolder = () => {
-    handleCloseDialog()
-    if (folderName.trim() !== '') addFolder(folderName.trim())
-    setFolderName('')
-  }
+  const createFolder = useStoreActions(a => a.folderState.create)
+  const setFolderId = useStoreActions(a => a.selectedState.setFolderId)
 
   const handleCloseDialog = () => setOpenDialog(false)
+
+  const handleCreateFolder = () => {
+    handleCloseDialog()
+    if (user && folderName.trim() !== '') {
+      const alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+      const id = generate(alphabet, 10)
+      const folder: Folder = {
+        id,
+        name: folderName.trim(),
+        parent: '',
+        owner: user.uid,
+        noteIds: [],
+        createdAt: new Date().toISOString(),
+      }
+      createFolder(folder)
+      setFolderId(id)
+    }
+    setFolderName('')
+  }
 
   return (
     <div className="folder-list">
@@ -75,7 +74,7 @@ const FolderList = () => {
           </DialogContent>
           <DialogActions>
             <Button onClick={handleCloseDialog}>Cancel</Button>
-            <Button color="primary" onClick={handleAddFolder}>
+            <Button color="primary" onClick={handleCreateFolder}>
               Add
             </Button>
           </DialogActions>
