@@ -14,18 +14,18 @@ const defaultSettings: Settings = {
 
 export interface SettingsStateModel {
   settings: Settings
-  update: Thunk<SettingsStateModel, Settings>
-  _update: Action<SettingsStateModel, Settings>
+  set: Thunk<SettingsStateModel, Settings>
+  _set: Action<SettingsStateModel, Settings>
 }
 
 const settingsState: SettingsStateModel = {
   settings: defaultSettings,
-  update: thunk(async (actions, settings) => {
+  set: thunk(async (actions, settings) => {
     const _s = { ...settings, updatedAt: new Date().toISOString() }
-    actions._update(_s)
+    actions._set(_s)
     if (_s.owner) await firestore.setSettings(_s.owner, _s)
   }),
-  _update: action((state, settings) => {
+  _set: action((state, settings) => {
     state.settings = settings
   }),
 }

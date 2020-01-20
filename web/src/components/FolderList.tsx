@@ -30,10 +30,8 @@ const FolderList = () => {
   const handleCreateFolder = () => {
     handleCloseDialog()
     if (user && folderName.trim() !== '') {
-      const alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
-      const id = generate(alphabet, 10)
       const folder: Folder = {
-        id,
+        id: generate('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz', 10),
         name: folderName.trim(),
         parent: '',
         owner: user.uid,
@@ -41,7 +39,7 @@ const FolderList = () => {
         createdAt: new Date().toISOString(),
       }
       createFolder(folder)
-      setFolderId(id)
+      setFolderId(folder.id)
     }
     setFolderName('')
   }

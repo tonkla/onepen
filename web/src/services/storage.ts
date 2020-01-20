@@ -19,20 +19,16 @@ export async function setNote(note: Note) {
 
 export async function delNote(id: string) {
   const note = await getNote(id)
-  if (note) {
-    await localforage.removeItem(`${KEY_NOTE}${id}`)
-  }
+  if (note) await localforage.removeItem(`${KEY_NOTE}${id}`)
 }
 
 export async function getNotes(ids: string[]): Promise<Note[]> {
-  // Note: `results.filter(n => n)` returns null
-  const notes: Note[] = []
-  ;(await Promise.all(ids.map(id => getNote(id)))).forEach((note: Note | null) => {
-    if (note) notes.push(note)
-  })
-  return notes.sort((a, b) =>
-    a.updatedAt && b.updatedAt && new Date(a.updatedAt) < new Date(b.updatedAt) ? 1 : -1
-  )
+  const notes = await Promise.all(ids.map(id => getNote(id)))
+  return notes
+    .filter((n): n is Note => n !== null)
+    .sort((a, b) =>
+      a.updatedAt && b.updatedAt && new Date(a.updatedAt) < new Date(b.updatedAt) ? 1 : -1
+    )
 }
 
 export async function setNotes(notes: Note[]) {

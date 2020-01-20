@@ -34,7 +34,7 @@ const Setting = () => {
   const s = useStoreState(s => s.settingsState.settings)
   const user = useStoreState(s => s.userState.user)
 
-  const update = useStoreActions(a => a.settingsState.update)
+  const setSettings = useStoreActions(a => a.settingsState.set)
 
   const handleCloseDialog = () => {
     setOpenDialogSetting(false)
@@ -48,7 +48,7 @@ const Setting = () => {
 
   const handleSaveSettings = () => {
     handleCloseDialog()
-    if (user && tmp) update({ ...s, ...tmp, owner: user.uid })
+    if (user && tmp) setSettings({ ...s, ...tmp, owner: user.uid })
   }
 
   const handleLogout = async () => {

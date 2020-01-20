@@ -31,11 +31,8 @@ const NoteList = () => {
 
   const handleCreateNote = async () => {
     if (!user || !folder) return
-
-    const alphabet = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
-    const id = generate(alphabet, 13)
     const note: Note = {
-      id,
+      id: generate('0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz', 13),
       parent: folder.id,
       owner: user.uid,
       title: '',
@@ -44,7 +41,7 @@ const NoteList = () => {
     }
     setNoteId(note.id)
     createNote(note)
-    updateFolder({ ...folder, noteIds: [id, ...folder.noteIds] })
+    updateFolder({ ...folder, noteIds: [note.id, ...folder.noteIds] })
   }
 
   return folder ? (

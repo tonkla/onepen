@@ -46,21 +46,18 @@ export async function delFolder(uid: string, folder: Folder) {
 }
 
 export async function getFolders(uid: string): Promise<Folder[]> {
-  const folders: Folder[] = []
   const doc = await db
     .collection(uid)
     .doc(KEY_FOLDERS)
     .get()
-  // Note: use `any` to simplify firestore.DocumentData
   if (doc.exists) {
     const { ids }: any = doc.data()
-    ;(await Promise.all<Folder | null>(ids.map((fid: string) => getFolder(uid, fid)))).forEach(
-      f => {
-        if (f) folders.push(f)
-      }
-    )
+    if (ids) {
+      const folders = await Promise.all(ids.map((fid: string) => getFolder(uid, fid)))
+      return folders.filter((f): f is Folder => f !== null)
+    }
   }
-  return folders
+  return []
 }
 
 export async function setFolderIds(uid: string, ids: string[]) {
@@ -113,12 +110,8 @@ export async function delNote(uid: string, nid: string) {
 }
 
 export async function getNotes(uid: string, ids: string[]): Promise<Note[]> {
-  // Note: notes.filter(n => n) returns `(Note | null)[]`
-  const notes: Note[] = []
-  ;(await Promise.all(ids.map(nid => getNote(uid, nid)))).forEach(n => {
-    if (n) notes.push(n)
-  })
-  return notes
+  const notes = await Promise.all(ids.map(nid => getNote(uid, nid)))
+  return notes.filter((n): n is Note => n !== null)
 }
 
 export async function getSettings(uid: string): Promise<Settings | null> {
@@ -146,15 +139,14 @@ export async function setSettings(uid: string, settings: Settings) {
   }
 }
 
-type RemovedItem = {
-  id: string
-  deletedAt: string
-}
-
 export async function isRemoved(uid: string, itemId: string): Promise<boolean> {
   return (await getRemovedItems(uid)).find(item => item.id === itemId) !== undefined
 }
 
+interface RemovedItem {
+  id: string
+  deletedAt: string
+}
 async function getRemovedItems(uid: string): Promise<RemovedItem[]> {
   try {
     const doc = await db
