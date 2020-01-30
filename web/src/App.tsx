@@ -7,7 +7,9 @@ import store from './store'
 
 import './styles/App.scss'
 
-type AppProps = { path: string }
+interface AppProps {
+  path: string
+}
 
 const route = (path: string) => {
   switch (path) {

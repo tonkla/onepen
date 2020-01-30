@@ -7,7 +7,7 @@ import { useDebouncedCallback } from 'use-debounce'
 
 import { useStoreActions, useStoreState } from '../store'
 
-type EditorTitleProps = {
+interface EditorTitleProps {
   callback: Function
 }
 

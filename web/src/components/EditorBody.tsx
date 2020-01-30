@@ -7,7 +7,7 @@ import { useDebouncedCallback } from 'use-debounce'
 
 import { useStoreActions, useStoreState } from '../store'
 
-type EditorBodyProps = {
+interface EditorBodyProps {
   callback: Function
   isFocusing: boolean
 }
