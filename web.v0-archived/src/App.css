@@ -1,0 +1,4 @@
+* { margin: 0; padding: 0; }
+html, body { height: 100%; }
+body { font-family: 'Mali', sans-serif; color: #444; }
+#root { height: 100%; }

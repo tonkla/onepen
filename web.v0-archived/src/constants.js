@@ -1,0 +1,6 @@
+export const KEY_NOTE = 'note_'
+export const KEY_NOTEBOOK = 'notebook_'
+export const KEY_WORKING_NOTE = 'workingnoteid'
+export const KEY_WORKING_NOTEBOOK = 'workingnotebookid'
+export const KEY_TRASH = 'trash'
+export const KEY_SYNC_ITEMS = 'syncitems'
